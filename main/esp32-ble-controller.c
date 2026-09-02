@@ -1,24 +1,39 @@
-#include <stdio.h>
+#include "control_task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
-#include "driver/ledc.h"
 
-#define LED_GPIO GPIO_NUM_2
-
-
-/* NOTE TO SELF: use ESP_ERROR_CHECK() where applicable */
 void app_main(void)
 {
-    gpio_reset_pin(LED_GPIO);
-    gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT);
+    /* call helper function */
+    ledc_init();
 
-    for(;;)
+    /* test brightness levels */
+    for (;;)
     {
-        gpio_set_level(LED_GPIO, 1);
-        vTaskDelay(pdMS_TO_TICKS(500));
-        gpio_set_level(LED_GPIO, 0);
-        vTaskDelay(pdMS_TO_TICKS(500));
+        printf("LED OFF: (0%%)\n");
+        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0); // write the duty to memory
+        ledc_update_duty(LEDC_MODE, LEDC_CHANNEL); // update and apply to the physical pin
+        vTaskDelay(pdMS_TO_TICKS(2000)); // add 2 second delay
+
+        printf("LED DIM: (25%%)\n");
+        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 2048);
+        ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+        vTaskDelay(pdMS_TO_TICKS(2000)); // add 2 second delay
+
+        printf("LED MEDIUM: (50%%)\n");
+        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 4095);
+        ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+        vTaskDelay(pdMS_TO_TICKS(2000)); // add 2 second delay
+
+        // printf("LED OFF: (75%%)\n");
+        // ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+        // ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+        // vTaskDelay(pdMS_TO_TICKS(2000)); // add 2 second delay
+
+        printf("LED MAX: (100%%)\n");
+        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8191);
+        ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+        vTaskDelay(pdMS_TO_TICKS(2000)); // add 2 second delay
 
     }
 }
