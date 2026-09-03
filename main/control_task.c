@@ -1,12 +1,5 @@
 #include "control_task.h"
 
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/gpio.h"
-#include "driver/ledc.h"
-
-
 /* NOTE TO SELF: use ESP_ERROR_CHECK() where applicable */
 
 /* official espressif docs for ledc - 

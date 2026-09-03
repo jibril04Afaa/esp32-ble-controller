@@ -1,6 +1,6 @@
 #include "ble_server.h"
 
-int main(void)
+void ble_server_init(void)
 {
-    return 0;
+    
 }
