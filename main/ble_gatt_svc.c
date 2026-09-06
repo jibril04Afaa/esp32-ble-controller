@@ -47,9 +47,36 @@ void send_indication(void)
 
 int gatt_svc_init(void)
 {
-    /* GATT services table */
+    /* GATT services table (this is an array of services)*/
+    
     static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
-        /* custom service A */
+        /* device control Service */
+        {
+            .type = BLE_GATT_SVC_TYPE_PRIMARY, /* primary service*/
+            .uuid = 0, /* TODO: add uuid */
+            .characteristics = 
+            (struct ble_gatt_chr_def[]) 
+            {
+                /* Command Characteristic */
+                {
+                    .uuid = '',
+                    .access_cb = func(),
+                    .flags = BLE_GATT_CHR_F_READ
+                },
+                /* State Characteristic */
+                                {
+                    .uuid = '',
+                    .access_cb = func(),
+                    .flags = BLE_GATT_CHR_F_READ
+                },
+                /* Device Info Characteristic */
+                                {
+                    .uuid = '',
+                    .access_cb = func(),
+                    .flags = BLE_GATT_CHR_F_READ
+                }, {0} /* NULL-terminator for characteristics array*/
+            }
+        }
 
         /* custom service B */
     }
