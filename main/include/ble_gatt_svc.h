@@ -15,7 +15,7 @@
 
 /* main service
    generated UUID : d4aba09e-4642-40c3-9b2d-199bac62d602 */
-#define SERVICE_UUID \
+#define DEVICE_SERVICE_UUID \
     0x02, 0xd6, 0x62, 0xac, 0x9b, 0x19, 0x2d, 0x9b, \
     0xc3, 0x40, 0x42, 0x46, 0x9e, 0xa0, 0xab, 0xd4
 
@@ -41,5 +41,6 @@
 void ble_server_init(void); 
 void send_indication(void);
 int gatt_svc_init(void);
+
 
 #endif // BLE_GATT_SVC_H
