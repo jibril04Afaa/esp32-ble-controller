@@ -57,7 +57,7 @@ void ble_server_init(void)
     /* add Characteristics inside the Service */
 
     /* */
-}
+} 
 
 void send_indication(void)
 {
