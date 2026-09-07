@@ -1,6 +1,6 @@
 #include "control_task.h"
 
-/* NOTE TO SELF: use ESP_ERROR_CHECK() where applicable */
+/* NOTE TO SELF: use ESP_ERROR_CHECK() & ESP_LOGI() where applicable */
 
 /* official espressif docs for ledc - 
 https://github.com/espressif/esp-idf/blob/v6.1/examples/peripherals/ledc/ledc_basic/main/ledc_basic_example_main.c

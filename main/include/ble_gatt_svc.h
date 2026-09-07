@@ -6,6 +6,7 @@
 /* NimBLE GATT APIs */
 #include "host/ble_gatt.h"
 #include "host/ble_uuid.h"
+#include "services/gatt/ble_svc_gatt.h"
 
 /* UUID procedure:
    NimBLE requires the 16 bytes to be in reverse order (Little-Endian).
