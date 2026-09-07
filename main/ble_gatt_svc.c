@@ -1,6 +1,6 @@
 /* this file contains a NimBLE GATT server
 sources: https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/ble/get-started/ble-introduction.html
-https://github.com/espressif/esp-idf/tree/v6.1/examples/bluetooth/ble_get_started/nimble/NimBLE_GATT_Server
+https://github.com/espressif/esp-idf/tree/v6.1/examples/bluetooth/ble_get_started/nimble/NimBLE_GATT_Server/main
 
 GATT (Generic Attribute Profile) Layer - defines how devices 
 exchange structured data after/around a connection
