@@ -1,6 +1,10 @@
 /* this file contains a NimBLE GATT server
-sources: https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/ble/get-started/ble-introduction.html
+sources: 
+https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/ble/get-started/ble-introduction.html
 https://github.com/espressif/esp-idf/tree/v6.1/examples/bluetooth/ble_get_started/nimble/NimBLE_GATT_Server/main
+https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/ble/get-started/ble-data-exchange.html
+
+official ble_gatt header file - https://github.com/espressif/esp-nimble/blob/2c864fe92041751592c73bcc3a4ad6fe856c2986/nimble/host/include/host/ble_gatt.h
 
 GATT (Generic Attribute Profile) Layer - defines how devices 
 exchange structured data after/around a connection
@@ -29,6 +33,11 @@ exchange structured data after/around a connection
                                       you whether it's a r/w operation (ctxt->op)
  - void* arg: generic ptr for passing custom data
  */
+
+/* 
+
+*/
+
 
  /* phone sends cmds (e.g, LED ON/OFF, change brightness %); this callback intercepts 
  the bytes & passes them to a FreeRTOS queue*/
@@ -91,27 +100,68 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
 static int cmd_char_cb(uint16_t conn_handle, uint16_t atr_handle, 
                         struct ble_gatt_access_ctxt* ctxt, void* arg)
 {
-    // switch (ctxt->op)
-    // {
-    // /* reading from ESP32 */
-    // case BLE_GATT_ACCESS_OP_READ_CHR:
-    //     /* code */
-    //     break;
-    // /* writing to ESP32 */
-    // case BLE_GATT_ACCESS_OP_WRITE_CHR:
-    //     break;
+    /* return code*/
+    int rc;
+
+    switch (ctxt->op)
+    {
+    /* extracting the payload (reading from ESP32) */
+    case BLE_GATT_ACCESS_OP_READ_CHR:
+    {
+        /* define data to send back */
+        uint8_t dummy_status = 0x01;
+
+        /* append data to NimBLE transmission buffer */
+        rc = os_mbuf_append(ctxt->om, &dummy_status, sizeof(dummy_status));
+
+        /* inform phone if buffer ran out of memory, success (0) otherwise */
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+        break;
+    }
+
+    /* appending to the payload (writing to ESP32) */
+    case BLE_GATT_ACCESS_OP_WRITE_CHR:
+    {
+        uint16_t bytes_length = OS_MBUF_PKTLEN(ctxt->om);
+        
+        if (bytes_length > 0)
+        {
+            /* the command is the first byte */
+            uint8_t cmd = ctxt->om->om_data[0]; // ctxt->om->om_data is an array
+            printf("Chosen command: %u\n", cmd);
+
+            /* TODO: send "cmd" to FreeRTOS queue */
+        }
+        break;
+    }
     
-    // default:
-    //     break;
-    // }
+    default:
+        break;
+    }
 
     return 0; /* exit success */
 }
 
+/* phone reads the state characteristic & checks
+the hardware's live status (e.g, LED ON @ 50%, MOTOR SPINNING @ 25%, etc...)
+*/
 
 static int state_char_cb(uint16_t conn_handle, uint16_t atr_handle, 
                          struct ble_gatt_access_ctxt* ctxt, void* arg)
 {
+    /* return code */
+    int rc = 0; 
+
+    switch (ctxt->op)
+    {
+    case BLE_GATT_ACCESS_OP_READ_CHR:
+        /* code */
+        break;
+    
+    default:
+        break;
+    }
+
     return 0; /* exit success */
 
 }
