@@ -22,7 +22,12 @@ exchange structured data after/around a connection
 */
 
 #include "ble_gatt_svc.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 #include <stdint.h>
+
+/* global queue variable */
+QueueHandle_t Queue_CMD;
 
 /* characteristics callbacks
  - uint16_t conn_handle: a unique id representing a specific connection
@@ -155,25 +160,39 @@ static int state_char_cb(uint16_t conn_handle, uint16_t atr_handle,
     switch (ctxt->op)
     {
     case BLE_GATT_ACCESS_OP_READ_CHR:
-        /* code */
-        break;
+        /* dummy states: ON(0x1), OFF(0x32) */
+        uint8_t dummy_states[] = {0x01, 0x32};
+
+        rc = os_mbuf_append(ctxt->om, &dummy_states, sizeof(dummy_states));
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
     
     default:
         break;
     }
 
-    return 0; /* exit success */
-
+    return 0; /* exit success */ 
 }
 
 
 static int device_info_cb(uint16_t conn_handle, uint16_t atr_handle, 
                           struct ble_gatt_access_ctxt* ctxt, void* arg)
 {
+    /* return code */
+    int rc = 0; 
+
+    switch (ctxt->op)
+    {
+    case BLE_GATT_ACCESS_OP_READ_CHR:
+        const char* dev_info = "ESP32 BLE Controller";
+
+        rc = os_mbuf_append(ctxt->om, &dev_info, strlen(dev_info));
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    
+    default:
+        break;
+    }
     return 0; /* exit success */
-
 }
-
 
 
 void ble_server_init(void)
