@@ -39,10 +39,6 @@ QueueHandle_t Queue_CMD;
  - void* arg: generic ptr for passing custom data
  */
 
-/* 
-
-*/
-
 
  /* phone sends cmds (e.g, LED ON/OFF, change brightness %); this callback intercepts 
  the bytes & passes them to a FreeRTOS queue*/
