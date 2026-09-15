@@ -9,7 +9,7 @@ official ble_gatt header file - https://github.com/espressif/esp-nimble/blob/2c8
 GATT (Generic Attribute Profile) Layer - defines how devices 
 exchange structured data after/around a connection
     - Characteristic
-    - Service 
+    - Service  
     - Profile (predefined set of services)
 
     The profile is the top container
@@ -195,9 +195,6 @@ void ble_server_init(void)
 {
     /* define the service UUIDs */
 
-    /* add Characteristics inside the Service */
-
-    /* */
 } 
 
 void send_indication(void)
