@@ -25,9 +25,10 @@ exchange structured data after/around a connection
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include <stdint.h>
+#include <string.h>
 
 /* global queue variable */
-QueueHandle_t Queue_CMD;
+extern QueueHandle_t Queue_CMD;
 
 /* characteristics callbacks
  - uint16_t conn_handle: a unique id representing a specific connection
@@ -131,7 +132,18 @@ static int cmd_char_cb(uint16_t conn_handle, uint16_t atr_handle,
             uint8_t cmd = ctxt->om->om_data[0]; // ctxt->om->om_data is an array
             printf("Chosen command: %u\n", cmd);
 
-            /* TODO: send "cmd" to FreeRTOS queue */
+            /* send "cmd" to FreeRTOS queue */
+            if (Queue_CMD != NULL)
+            {
+                if (xQueueSend(Queue_CMD, &cmd, 0) != pdTRUE)
+                {
+                    printf("Error! Command Queue is full!\n");
+                }
+            }
+            else
+            {
+                printf("Queue is not initialized yet, but BLE received: %u\n", cmd);
+            }
         }
         break;
     }
@@ -190,12 +202,6 @@ static int device_info_cb(uint16_t conn_handle, uint16_t atr_handle,
     return 0; /* exit success */
 }
 
-
-void ble_server_init(void)
-{
-    /* define the service UUIDs */
-
-} 
 
 void send_indication(void)
 {
