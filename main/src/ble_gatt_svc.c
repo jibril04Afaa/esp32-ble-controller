@@ -203,10 +203,10 @@ static int device_info_cb(uint16_t conn_handle, uint16_t atr_handle,
 }
 
 
-void send_indication(void)
-{
+// void send_indication(void)
+// {
 
-}
+// }
 
 /* initiliaze GATT server */
 int gatt_svc_init(void)
