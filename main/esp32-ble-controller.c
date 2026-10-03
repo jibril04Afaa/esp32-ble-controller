@@ -2,6 +2,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+/* full architecture diagram - https://excalidraw.com/#json=-7hud_uCYIXXNvqZRTbej,gwC8Xy7wQsYI_e4KHSQnGw*/
+
 
 void app_main(void)
 {

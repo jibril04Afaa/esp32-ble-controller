@@ -2,6 +2,10 @@
     This file contains the GAP layer which handles discovery & connections
     Central - Mobile Smartphone
     Peripheral - ESP32(D)
+
+    Sources:
+    https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gap
+    
 */
 
 #include "gap.h"
@@ -17,7 +21,7 @@ int ble_gap_event_cb(struct ble_gap_event* event, void* arg)
     case BLE_GAP_EVENT_CONNECT:
         if (event->connect.status == 0)
         {
-            printf("The bluetooth device is ready to pair \n");
+            printf("BLE device connected! \n");
         }
         else
         {
@@ -37,5 +41,8 @@ int ble_gap_event_cb(struct ble_gap_event* event, void* arg)
  
 void ble_app_advertise(void)
 {
-    
+    /* set device name */
+    ble_svc_gap_device_name_set("ESP32_Controller");
+
+    /* configure broadcast payload */
 }
