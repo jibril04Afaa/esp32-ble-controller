@@ -44,5 +44,39 @@ void ble_app_advertise(void)
     /* set device name */
     ble_svc_gap_device_name_set("ESP32_Controller");
 
-    /* configure broadcast payload */
+    /* configure broadcast payload (Over The Air btw) */
+    struct ble_hs_adv_fields fields;
+    memset(&fields, 0, sizeof(fields)); // zero-initialize fields
+
+    /* General Discoverable Mode & Basic Rate/Enhanced Data Rate */
+    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
+
+    /* attach name to broadcast */
+    fields.name = (uint8_t)"ESP32_BLE_Controller";
+    fields.name_len = strlen("ESP32_BLE_Controller");
+    fields.name_is_complete = 1;
+
+    /* attach primary service to UUID. 
+       BLE macros from ble_gatt_svc.h */
+    ble_uuid128_t svc_uuid = BLE_UUID128_INIT(DEVICE_SERVICE_UUID);
+    fields.uuids128 = &svc_uuid;
+    fields.num_uuids128 = 1;
+    fields.uuids128_is_complete = 1;
+
+    /* push payload to NimBLE */
+    ble_gap_adv_set_fields(&fields);
+
+    /* configure & start the radio */
+    struct ble_gap_adv_params adv_params;
+    memset(&adv_params, 0, sizeof(adv_params)); /* zero-initialize advertising parameters */
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND; // allow incoming connections
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN; // allow discovery
+
+    /* official beginning of advertising */
+    ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC, 
+                      NULL, BLE_HS_FOREVER, 
+                      &adv_params, ble_gap_event_cb,
+                      NULL);
+
+    printf("ESP32 is now advertising... \n");
 }
