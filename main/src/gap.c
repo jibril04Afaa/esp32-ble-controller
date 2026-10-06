@@ -44,17 +44,12 @@ void ble_app_advertise(void)
     /* set device name */
     ble_svc_gap_device_name_set("ESP32_Controller");
 
-    /* configure broadcast payload (Over The Air btw) */
+    /* (MAIN broadcast payload) configure broadcast payload (Over The Air btw) */
     struct ble_hs_adv_fields fields;
     memset(&fields, 0, sizeof(fields)); // zero-initialize fields
 
     /* General Discoverable Mode & Basic Rate/Enhanced Data Rate */
     fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
-
-    /* attach name to broadcast */
-    fields.name = (uint8_t)"ESP32_BLE_Controller";
-    fields.name_len = strlen("ESP32_BLE_Controller");
-    fields.name_is_complete = 1;
 
     /* attach primary service to UUID. 
        BLE macros from ble_gatt_svc.h */
@@ -63,8 +58,20 @@ void ble_app_advertise(void)
     fields.num_uuids128 = 1;
     fields.uuids128_is_complete = 1;
 
-    /* push payload to NimBLE */
+    /* push main payload to NimBLE */
     ble_gap_adv_set_fields(&fields);
+
+    /* scan response payload (to fit the device name) */
+    struct ble_hs_adv_fields rsp_fields;
+    memset(&rsp_fields, 0, sizeof(fields)); // zero-initialize fields
+
+    /* attach name to secondary broadcast */
+    rsp_fields.name = (uint8_t*)"ESP32_BLE_Controller";
+    rsp_fields.name_len = strlen("ESP32_BLE_Controller");
+    rsp_fields.name_is_complete = 1;
+
+    /* push scan response payload to NimBLE */
+    ble_gap_adv_set_fields(&rsp_fields);
 
     /* configure & start the radio */
     struct ble_gap_adv_params adv_params;
