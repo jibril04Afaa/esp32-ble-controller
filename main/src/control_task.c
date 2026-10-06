@@ -1,10 +1,57 @@
 #include "control_task.h"
+#include "freertos/FreeRTOS.h"
 
 /* NOTE TO SELF: use ESP_ERROR_CHECK() & ESP_LOGI() where applicable */
 
 /* official espressif docs for ledc - 
 https://github.com/espressif/esp-idf/blob/v6.1/examples/peripherals/ledc/ledc_basic/main/ledc_basic_example_main.c
 */
+
+/* global queue variable */
+QueueHandle_t Queue_CMD;
+
+// GIOP 2 
+
+
+void hardware_control_task(void* pvParameters)
+{
+    uint8_t received_cmd;
+
+    /* initialize hardware drivers (ledc pwm in this case) */
+    ledc_init();
+    printf("Hardware control task started, awaiting commands... \n");
+
+    /* infinite FreeRTOS execution loop */
+    for(;;)
+    {
+        /* block task efficiently until data arrives */
+        if (xQueueReceive(Queue_CMD, &received_cmd, portMAX_DELAY) == pdTRUE)
+        {
+            printf("Hardware task executing command: 0x%02X\n", received_cmd);
+
+            /* route command to physical hardware */
+            switch (received_cmd)
+            {
+            case 0x01: // 0x01 - 1 (base10)
+                printf("Executing: Device ON \n");
+                /* 255 is 100% duty cycle */
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 255);
+                ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+                break;
+            case 0x32: // 0x32 - 50 (base10)
+                /* 0 is 0% duty cycle */
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
+                ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+                break;
+            
+            default:
+                printf("Unknown commmand received. \n");
+                break;
+            }
+        }
+    }
+}
+
 
 void ledc_init(void)
 {

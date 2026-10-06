@@ -14,4 +14,7 @@
 
 void ledc_init(void);
 
+/* pvParameters - pointer to void parameters (FreeRTOS standard)*/
+void hardware_control_task(void* pvParameters);
+
 #endif // CTRL_TASK_H

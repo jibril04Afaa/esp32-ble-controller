@@ -4,13 +4,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include"nimble/nimble_port.h"
+#include "nimble/nimble_port.h"
 #include "nimble/nimble_port_freertos.h"
 #include "host/ble_hs.h"
 
 #include "ble_gatt_svc.h"
 #include "gap.h"
 #include "control_task.h"
+
 
 /* global queue variable */
 extern QueueHandle_t Queue_CMD;

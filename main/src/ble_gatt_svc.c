@@ -93,7 +93,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                 .flags = BLE_GATT_CHR_F_READ
             }, {0} /* NULL-terminator for characteristics array*/
         }
-    }
+    }, {0} /* NULL terminator for Services array */
 
     /* custom service B */
 };
@@ -168,7 +168,7 @@ static int state_char_cb(uint16_t conn_handle, uint16_t atr_handle,
     switch (ctxt->op)
     {
     case BLE_GATT_ACCESS_OP_READ_CHR:
-        /* dummy states: ON(0x1), OFF(0x32) */
+        /* dummy states: ON(0x01), OFF(0x32) */
         uint8_t dummy_states[] = {0x01, 0x32};
 
         rc = os_mbuf_append(ctxt->om, &dummy_states, sizeof(dummy_states));
